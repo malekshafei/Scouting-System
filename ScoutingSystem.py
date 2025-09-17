@@ -7,6 +7,7 @@ from google.oauth2.service_account import Credentials
 import numpy as np
 from datetime import datetime, date
 import time 
+from tmscraper import get_player_data
  
 # Page configuration
 st.set_page_config(
@@ -501,7 +502,7 @@ def database_tab(sheet_url, scouting_df):
 def add_player_tab(sheet_url, scouting_df):
     st.subheader("Add TM Link")
 
-    from tmscraper import get_player_data
+    
     
     with st.form("tm_player_form"):
         # Single player
@@ -510,9 +511,9 @@ def add_player_tab(sheet_url, scouting_df):
         with col1: 
             scout_assigned = st.text_input("Select Scout*")
         with col2: 
-            priority_assigned = st.selectbox("Priority", ["Low", "Medium", "High"])
+            priority_assigned = st.selectbox("Priority", ["High", "Medium", "Low"])
         with col3: 
-            category_assigned = st.selectbox("Category", ["Youth", "Senior", "Development"])
+            category_assigned = st.selectbox("Category", ["First Team", "Emerging"])
         with col4:
             source_assigned = st.selectbox("Source", ["Data", "Agent", "Scouting"])
 
