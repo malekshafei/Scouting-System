@@ -7,7 +7,21 @@ from google.oauth2.service_account import Credentials
 import numpy as np
 from datetime import datetime, date
 import time 
+import os
 from tmscraper import get_player_data
+
+def setup_scraperapi():
+    """Set up ScraperAPI key from Streamlit secrets"""
+    try:
+        # Try to get from Streamlit secrets first
+        if hasattr(st, 'secrets') and 'SCRAPERAPI_KEY' in st.secrets:
+            os.environ['SCRAPERAPI_KEY'] = st.secrets['SCRAPERAPI_KEY']
+            return True
+    except Exception:
+        pass
+    
+    # Check if already in environment
+    return 'SCRAPERAPI_KEY' in os.environ
  
 # Page configuration
 st.set_page_config(
@@ -502,7 +516,11 @@ def database_tab(sheet_url, scouting_df):
 def add_player_tab(sheet_url, scouting_df):
     st.subheader("Add TM Link")
 
-    
+    scraperapi_available = setup_scraperapi()
+    if scraperapi_available:
+        st.success("Enhanced scraping enabled")
+    else:
+        st.warning("Using basic scraping (may fail on Streamlit Cloud)")
     
     with st.form("tm_player_form"):
         # Single player
@@ -521,8 +539,12 @@ def add_player_tab(sheet_url, scouting_df):
         
         if tm_submitted and tm_link and scout_assigned and priority_assigned and category_assigned:
             
-            st.write(f"DEBUG: Attempting to scrape: {tm_link}")
-            st.write(f"DEBUG: get_player_data function exists: {callable(get_player_data)}")
+            scraperapi_key = os.getenv('SCRAPERAPI_KEY')
+            if scraperapi_key:
+                api_url = f"https://api.scraperapi.com/?api_key={scraperapi_key[:8]}...&url={tm_link}"
+                st.write(f"**DEBUG: Using ScraperAPI URL:** {api_url}")
+            else:
+                st.write(f"**DEBUG: Using direct URL:** {tm_link}")
 
             try:
                 st.write("DEBUG: Calling get_player_data...")
