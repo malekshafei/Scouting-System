@@ -411,7 +411,9 @@ def database_tab(sheet_url, scouting_df):
         
         filtered_df = filtered_df[available_cols]
         
-        st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+        #st.dataframe(filtered_df, use_container_width=True, hide_index=True)
+        st.dataframe(filtered_df, width='stretch', hide_index=True)
+        
         
 
         st.subheader("Overall")
@@ -1222,7 +1224,8 @@ def player_view_tab(scouting_df):
                         xanchor='right'
                     )
                 
-                st.plotly_chart(fig, use_container_width=True)
+                #st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
             
             # Checkboxes below the radar
             st.write("**Select assessments to display (max 2):**")
@@ -1655,7 +1658,8 @@ def power_rankings_tab(scouting_df):
         rankings_df.insert(0, "Rank", range(1, len(rankings_df) + 1))
         
         # Display rankings
-        st.dataframe(rankings_df, use_container_width=True)
+        #st.dataframe(rankings_df, use_container_width=True)
+        st.dataframe(rankings_df, stretch='width')
         
         # Show top 3 with more details
         if len(rankings_df) >= 3:
