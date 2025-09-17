@@ -552,14 +552,14 @@ def add_player_tab(sheet_url, scouting_df):
                     st.rerun()
                 else:
                     st.error("Could not extract player data from TM link")
-                    st.error(f"DEBUG: Exception in TM scraping: {type(e).__name__}: {e}")
-                    import traceback
-                    st.code(traceback.format_exc())
+                    #st.error(f"DEBUG: Exception in TM scraping: {type(e).__name__}: {e}")
+                    #import traceback
+                    #st.code(traceback.format_exc())
             except Exception as e:
                 st.error(f"Error processing TM link: {e}")
-                st.error(f"DEBUG: Exception in TM scraping: {type(e).__name__}: {e}")
-                import traceback
-                st.code(traceback.format_exc())
+                #st.error(f"DEBUG: Exception in TM scraping: {type(e).__name__}: {e}")
+                #import traceback
+                #st.code(traceback.format_exc())
 
         elif tm_submitted:
             st.error("Please fill out all required fields")
