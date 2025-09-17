@@ -433,18 +433,44 @@ if __name__ == "__main__":
 
 # ===== EASY-TO-USE FUNCTIONS FOR OTHER PROGRAMS =====
 
-def get_player_data(tm_link):
-    """
-    Simple function to get player data from a Transfermarkt link
+# def get_player_data(tm_link):
+#     """
+#     Simple function to get player data from a Transfermarkt link
     
-    Args:
-        tm_link (str): Transfermarkt player profile URL
+#     Args:
+#         tm_link (str): Transfermarkt player profile URL
         
-    Returns:
-        dict: Player information or None if failed
-    """
-    scraper = TransfermarktScraper()
-    print(tm_link)
-    return scraper.scrape_player_info(tm_link)
+#     Returns:
+#         dict: Player information or None if failed
+#     """
+#     scraper = TransfermarktScraper()
+#     print(tm_link)
+#     return scraper.scrape_player_info(tm_link)
+import streamlit as st
+def get_player_data(tm_link):
+    headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+        }
+    try:
+        st.write(f"Debug: Attempting to scrape {tm_link}")
+        response = requests.get(tm_link, headers=headers, timeout=30)
+        st.write(f"Debug: Response status: {response.status_code}")
+        
+        if response.status_code == 200:
+            # Your parsing logic
+            st.write("Debug: Successfully got response")
+            scraper = TransfermarktScraper()
+            return scraper.scrape_player_info(tm_link)
+        else:
+            st.error(f"Debug: Bad status code: {response.status_code}")
+            return None
+    except Exception as e:
+        st.error(f"Debug: Exception occurred: {str(e)}")
+        return None
 
 # ===== USAGE EXAMPLES =====
