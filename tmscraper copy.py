@@ -2,27 +2,46 @@ import requests
 from bs4 import BeautifulSoup
 import re
 import time
-import os
 
 class TransfermarktScraper:
-    def __init__(self, use_scraperapi=False, scraperapi_key=None):
-        # Original headers
+    def __init__(self):
+        # self.headers = {
+        #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        #     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        #     'Accept-Language': 'en-US,en;q=0.9',
+        #     'Accept-Encoding': 'gzip, deflate, br',
+        #     'Connection': 'keep-alive',
+        #     'Upgrade-Insecure-Requests': '1',
+        # }
         self.headers = {
             "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/91.0.4472.124 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/91.0.4472.124 Safari/537.36"
             ),
             "Accept-Language": "en-US,en;q=0.9",
         }
-        
-        # ScraperAPI configuration
-        self.use_scraperapi = use_scraperapi
-        self.scraperapi_key = scraperapi_key or os.getenv('SCRAPERAPI_KEY')
-        
+        # self.headers = {
+
+        #     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        #     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        #     'Accept-Language': 'en-US,en;q=0.9,de;q=0.8',
+        #     'Accept-Encoding': 'gzip, deflate, br',
+        #     'Cache-Control': 'no-cache',
+        #     'Connection': 'keep-alive',
+        #     'DNT': '1',
+        #     'Pragma': 'no-cache',
+        #     'Sec-Fetch-Dest': 'document',
+        #     'Sec-Fetch-Mode': 'navigate',
+        #     'Sec-Fetch-Site': 'none',
+        #     'Sec-Fetch-User': '?1',
+        #     'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Google Chrome";v="120"',
+        #     'Sec-Ch-Ua-Mobile': '?0',
+        #     'Sec-Ch-Ua-Platform': '"macOS"',
+        #     'Upgrade-Insecure-Requests': '1',
+        # }
         self.session = requests.Session()
-        if not use_scraperapi:
-            self.session.headers.update(self.headers)
+        self.session.headers.update(self.headers)
         
         # Position mapping - customize as needed
         self.position_mapping = {
@@ -40,19 +59,6 @@ class TransfermarktScraper:
             'Attack - Second Striker': '9',
             'Attack - Centre-Forward': '9',
         }
-
-    def _get_response(self, url):
-        """Get response using either direct request or ScraperAPI"""
-        if self.use_scraperapi and self.scraperapi_key:
-            # Use ScraperAPI
-            api_url = f"https://api.scraperapi.com/?api_key={self.scraperapi_key}&url={url}"
-            response = self.session.get(api_url)
-        else:
-            # Direct request
-            response = self.session.get(url)
-        
-        response.raise_for_status()
-        return response
 
     def _format_league_level(self, league_level_text):
         """Convert league level to Country-Number format"""
@@ -172,8 +178,8 @@ class TransfermarktScraper:
         try:
             time.sleep(2)
             
-            # Use the new response method that handles ScraperAPI
-            response = self._get_response(url)
+            response = self.session.get(url)
+            response.raise_for_status()
             
             soup = BeautifulSoup(response.content, 'html.parser')
             
@@ -457,7 +463,6 @@ if __name__ == "__main__":
 def get_player_data(tm_link):
     """
     Simple function to get player data from a Transfermarkt link
-    Automatically uses ScraperAPI if available, falls back to direct scraping
     
     Args:
         tm_link (str): Transfermarkt player profile URL
@@ -465,14 +470,8 @@ def get_player_data(tm_link):
     Returns:
         dict: Player information or None if failed
     """
-    # Try to get ScraperAPI key from environment/secrets
-    scraperapi_key = os.getenv('SCRAPERAPI_KEY')
-    
-    # Use ScraperAPI if key is available, otherwise direct scraping
-    use_scraperapi = scraperapi_key is not None
-    
-    scraper = TransfermarktScraper(use_scraperapi=use_scraperapi, scraperapi_key=scraperapi_key)
-    print(f"Using {'ScraperAPI' if use_scraperapi else 'direct scraping'} for: {tm_link}")
+    scraper = TransfermarktScraper()
+    print(tm_link)
     return scraper.scrape_player_info(tm_link)
 
 
