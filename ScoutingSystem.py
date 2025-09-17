@@ -9,19 +9,48 @@ from datetime import datetime, date
 import time 
 import os
 from tmscraper import get_player_data
-
 def setup_scraperapi():
     """Set up ScraperAPI key from Streamlit secrets"""
+    st.write("DEBUG: Checking for ScraperAPI key...")
+    
     try:
-        # Try to get from Streamlit secrets first
-        if hasattr(st, 'secrets') and 'SCRAPERAPI_KEY' in st.secrets:
-            os.environ['SCRAPERAPI_KEY'] = st.secrets['SCRAPERAPI_KEY']
-            return True
-    except Exception:
-        pass
+        # Check if st.secrets exists
+        st.write(f"DEBUG: st.secrets exists: {hasattr(st, 'secrets')}")
+        
+        if hasattr(st, 'secrets'):
+            # Check what keys are available in secrets
+            try:
+                secret_keys = list(st.secrets.keys())
+                st.write(f"DEBUG: Available secret keys: {secret_keys}")
+            except Exception as e:
+                st.write(f"DEBUG: Error getting secret keys: {e}")
+            
+            # Check specifically for SCRAPERAPI_KEY
+            if 'SCRAPERAPI_KEY' in st.secrets:
+                key = st.secrets['SCRAPERAPI_KEY']
+                masked_key = f"{key[:8]}...{key[-4:]}" if len(key) > 12 else f"{key[:4]}..."
+                st.write(f"DEBUG: Found SCRAPERAPI_KEY: {masked_key}")
+                os.environ['SCRAPERAPI_KEY'] = key
+                return True
+            else:
+                st.write("DEBUG: SCRAPERAPI_KEY not found in secrets")
+        else:
+            st.write("DEBUG: st.secrets not available")
+            
+    except Exception as e:
+        st.write(f"DEBUG: Exception in setup_scraperapi: {e}")
     
     # Check if already in environment
-    return 'SCRAPERAPI_KEY' in os.environ
+    env_key = os.getenv('SCRAPERAPI_KEY')
+    if env_key:
+        masked_key = f"{env_key[:8]}...{env_key[-4:]}" if len(env_key) > 12 else f"{env_key[:4]}..."
+        st.write(f"DEBUG: Found SCRAPERAPI_KEY in environment: {masked_key}")
+        return True
+    else:
+        st.write("DEBUG: SCRAPERAPI_KEY not in environment")
+        
+    return False
+
  
 # Page configuration
 st.set_page_config(
@@ -517,6 +546,11 @@ def database_tab(sheet_url, scouting_df):
 
 def add_player_tab(sheet_url, scouting_df):
     st.subheader("Add TM Link")
+
+    st.write("=== SCRAPERAPI DEBUG ===")
+    scraperapi_available = setup_scraperapi()
+    st.write(f"DEBUG: ScraperAPI available: {scraperapi_available}")
+    st.write("=== END DEBUG ===")
 
     scraperapi_available = setup_scraperapi()
     if scraperapi_available:
