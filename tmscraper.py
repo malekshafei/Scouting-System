@@ -444,6 +444,7 @@ def get_player_data(tm_link):
         dict: Player information or None if failed
     """
     scraper = TransfermarktScraper()
+    print(tm_link)
     return scraper.scrape_player_info(tm_link)
 
 # ===== USAGE EXAMPLES =====
