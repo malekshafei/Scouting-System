@@ -520,9 +520,17 @@ def add_player_tab(sheet_url, scouting_df):
         tm_submitted = st.form_submit_button("Add Player from TM")
         
         if tm_submitted and tm_link and scout_assigned and priority_assigned and category_assigned:
+            
+            st.write(f"DEBUG: Attempting to scrape: {tm_link}")
+            st.write(f"DEBUG: get_player_data function exists: {callable(get_player_data)}")
+
             try:
+                st.write("DEBUG: Calling get_player_data...")
                 player = get_player_data(tm_link)
+                st.write(f"DEBUG: Scraper returned: {type(player)}")
+                st.write(f"DEBUG: Player data: {player}")
                 if player:
+                    st.success("DEBUG: Player data successfully retrieved")
                     player_data = {
                         "Player": player['Player Name'],
                         "Club": player['Club'],
@@ -544,8 +552,15 @@ def add_player_tab(sheet_url, scouting_df):
                     st.rerun()
                 else:
                     st.error("Could not extract player data from TM link")
+                    st.error(f"DEBUG: Exception in TM scraping: {type(e).__name__}: {e}")
+                    import traceback
+                    st.code(traceback.format_exc())
             except Exception as e:
                 st.error(f"Error processing TM link: {e}")
+                st.error(f"DEBUG: Exception in TM scraping: {type(e).__name__}: {e}")
+                import traceback
+                st.code(traceback.format_exc())
+
         elif tm_submitted:
             st.error("Please fill out all required fields")
 
