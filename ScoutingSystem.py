@@ -1358,8 +1358,8 @@ def power_rankings_tab(scouting_df):
         rankings_df.insert(0, "Rank", range(1, len(rankings_df) + 1))
         
         # Display rankings
-        #st.dataframe(rankings_df, use_container_width=True)
-        st.dataframe(rankings_df, stretch='width')
+        st.dataframe(rankings_df, use_container_width=True)
+        #st.dataframe(rankings_df, stretch='width')
         
         # Show top 3 with more details
         if len(rankings_df) >= 3:
