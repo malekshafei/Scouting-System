@@ -310,6 +310,7 @@ POSITION_ATTRIBUTES = {
     }
 
 
+
 # All possible attributes (for column headers)
 # All possible attributes (for column headers) - fix the generation
 ALL_ATTRIBUTES = []
@@ -441,7 +442,7 @@ def database_tab(sheet_url, scouting_df):
         filtered_df = filtered_df[available_cols]
         
         #st.dataframe(filtered_df, use_container_width=True, hide_index=True)
-        st.dataframe(filtered_df, width='stretch', hide_index=True)
+        st.dataframe(filtered_df, use_container_width=True, hide_index=True)
         
         
 
@@ -563,13 +564,14 @@ def add_player_tab(sheet_url, scouting_df):
         tm_link = st.text_input("Enter TM Link (use .com format on basic player page NOT .uk,.de,etc)")
         col1, col2, col3,col4= st.columns(4)
         with col1: 
-            scout_assigned = st.text_input("Select Scout*")
+            #scout_assigned = st.text_input("Select Scout*")
+            scout_assigned = st.multiselect("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Julián'])
         with col2: 
             priority_assigned = st.selectbox("Priority", ["High", "Medium", "Low"])
         with col3: 
             category_assigned = st.selectbox("Category", ["First Team", "Emerging"])
         with col4:
-            source_assigned = st.selectbox("Source", ["Data", "Agent", "Scouting"])
+            source_assigned = st.selectbox("Source", ["Data", "Agent", "EyeBall", "Scouting"])
 
         tm_submitted = st.form_submit_button("Add Player from TM")
         
@@ -583,30 +585,32 @@ def add_player_tab(sheet_url, scouting_df):
                 #st.write(f"**DEBUG: Using direct URL:** {tm_link}")
 
             try:
-                st.write("DEBUG: Calling get_player_data...")
+                #st.write("DEBUG: Calling get_player_data...")
                 player = get_player_data(tm_link)
-                st.write(f"DEBUG: Scraper returned: {type(player)}")
-                st.write(f"DEBUG: Player data: {player}")
+                #st.write(f"DEBUG: Scraper returned: {type(player)}")
+                #st.write(f"DEBUG: Player data: {player}")
+                
                 if player:
-                    st.success("DEBUG: Player data successfully retrieved")
-                    player_data = {
-                        "Player": player['Player Name'],
-                        "Club": player['Club'],
-                        "League": player['League Level'],
-                        "Age": player['Age'],
-                        "DOB": player['Date of Birth'],
-                        "Position": player['Position'],
-                        "Height": player['Height'],
-                        "Source": source_assigned,
-                        "Category": category_assigned,  # Remove the comma and tuple
-                        "Date_Sent": datetime.now().strftime("%Y-%m-%d"),
-                        "Priority": priority_assigned,
-                        "Scout": scout_assigned,
-                        "Agent": player['Player Agent'],
-                        "Market Value": player['Market Value'],
-                        "Contract Expires": player['Contract Expires'],
-                    }
-                    add_player_to_sheet(sheet_url, player_data)
+                    for i in range(len(scout_assigned)):
+                        st.success("DEBUG: Player data successfully retrieved")
+                        player_data = {
+                            "Player": player['Player Name'],
+                            "Club": player['Club'],
+                            "League": player['League Level'],
+                            "Age": player['Age'],
+                            "DOB": player['Date of Birth'],
+                            "Position": player['Position'],
+                            "Height": player['Height'],
+                            "Source": source_assigned,
+                            "Category": category_assigned,  # Remove the comma and tuple
+                            "Date_Sent": datetime.now().strftime("%Y-%m-%d"),
+                            "Priority": priority_assigned,
+                            "Scout": scout_assigned[i],
+                            "Agent": player['Player Agent'],
+                            "Market Value": player['Market Value'],
+                            "Contract Expires": player['Contract Expires'],
+                        }
+                        add_player_to_sheet(sheet_url, player_data)
                     st.rerun()
                 else:
                     st.error("Could not extract player data from TM link")
@@ -634,10 +638,10 @@ def add_player_tab(sheet_url, scouting_df):
         dob = st.text_input("Date of Birth (MM/YY)", placeholder="")
         position = st.selectbox("Position*", list(POSITION_ATTRIBUTES.keys()))
         height = st.text_input("Height (cm)", placeholder="")
-        source = st.selectbox("Source", ["Data", "Agent", "Scouting"])
-        category = st.selectbox("Category", ["Youth", "Senior", "Development"])
-        priority = st.selectbox("Priority", ["Low", "Medium", "High"])
-        scout = st.text_input("Assigned Scout")
+        source = st.selectbox("Source", ["Data", "Agent", "EyeBall", "Scouting"])
+        category = st.selectbox("Category", ["First Team", "Emerging"])
+        priority = st.selectbox("Priority", ["High", "Medium", "Low"])
+        scout = st.multiselect("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Julián'])
         agent = st.text_input("Agent")
         market_value = st.text_input("Market Value")
         contract_expires = st.text_input("Contract Expires")
@@ -645,365 +649,27 @@ def add_player_tab(sheet_url, scouting_df):
         submitted = st.form_submit_button("Add Player")
         
         if submitted and player_name and club and league:
-            player_data = {
-                "Player": player_name,
-                "Club": club,
-                "League": league,
-                "Age": age,
-                "DOB": dob,
-                "Position": position,
-                "Height": height,
-                "Category": category,
-                "Source": source,
-                "Date_Sent": datetime.now().strftime("%Y-%m-%d"),
-                "Priority": priority,
-                "Scout": scout,
-                "Agent": agent,
-                "Contract Expires": contract_expires
-            }
-            add_player_to_sheet(sheet_url, player_data)
+            for i in range(len(scout)):
+                player_data = {
+                    "Player": player_name,
+                    "Club": club,
+                    "League": league,
+                    "Age": age,
+                    "DOB": dob,
+                    "Position": position,
+                    "Height": height,
+                    "Category": category,
+                    "Source": source,
+                    "Date_Sent": datetime.now().strftime("%Y-%m-%d"),
+                    "Priority": priority,
+                    "Scout": scout[i],
+                    "Agent": agent,
+                    "Market Value": market_value,
+                    "Contract Expires": contract_expires
+                }
+                add_player_to_sheet(sheet_url, player_data)
             st.rerun()
 
-# def player_view_tab(scouting_df):
-#     """Individual player view with comments and radar chart"""
-    
-#     if scouting_df.empty:
-#         st.info("No players available. Add some players in the Database tab.")
-#         return
-    
-#     # Player selection
-#     unique_players = scouting_df["Player"].dropna().unique().tolist()
-#     selected_player = st.selectbox("Select a player:", unique_players)
-    
-#     if not selected_player:
-#         return
-    
-#     # Get all data for this player
-#     player_data = scouting_df[scouting_df["Player"] == selected_player]
-    
-#     if player_data.empty:
-#         st.error("No data found for selected player.")
-#         return
-    
-#     # Get basic player info (from first/most recent entry)
-#     latest_entry = player_data.iloc[-1]
-    
-#     col1, col2 = st.columns([0.7, 1])
-    
-#     with col1:
-#         st.subheader(f"{selected_player} Bio")
-        
-#         # Display player details
-#         info_col1, info_col2 = st.columns(2)
-#         with info_col1:
-#             st.write(f"**Club:** {latest_entry.get('Club', 'N/A')}")
-#             st.write(f"**League:** {latest_entry.get('League', 'N/A')}")
-#             st.write(f"**Age:** {latest_entry.get('Age', 'N/A')} ({latest_entry.get('DOB', 'N/A')})")
-#             st.write(f"**Position:** {latest_entry.get('Position', 'N/A')}")
-#             st.write(f"**Height:** {latest_entry.get('Height', 'N/A')} cm")
-#             #st.write(f"**Age:** {latest_entry.get('Age', 'N/A')}")
-#             st.write(f"**Source:** {latest_entry.get('Source', 'N/A')}")
-#             st.write(f"**Scout:** {latest_entry.get('Scout', 'N/A')}")
-#             st.write(f"**Agent:** {latest_entry.get('Agent', 'N/A')}")
-#             st.write(f"**Contract Expires:** {latest_entry.get('Contract Expires', 'N/A')}")
-            
-        
-#         st.subheader("Assessment History")
-        
-#         # Show all assessments for this player
-#         assessments_with_data = player_data.dropna(subset=["Comment"])
-        
-#         if not assessments_with_data.empty:
-#             for idx, assessment in assessments_with_data.iterrows():
-#                 advance_status = assessment.get('Advance', 'N/A')
-                
-#                 with st.expander(f"{assessment.get('Scout', 'N/A')} - {assessment.get('Advance', 'N/A')} - {assessment.get('Date_Watched', 'N/A')}"):
-#                     st.write(f"**Advance?** {advance_status}")
-#                     st.write(f"**Comment:** {assessment.get('Comment', 'No comment')}")
-#                     if pd.notna(assessment.get('CR')):
-#                         st.write(f"**Current Rating:** {assessment['CR']}")
-#                     if pd.notna(assessment.get('PR')):
-#                         st.write(f"**Potential Rating:** {assessment['PR']}")
-#         else:
-#             st.info("No assessments available for this player.")
-    
-#     with col2:
-#         st.subheader("Performance Radar")
-        
-#         # Get assessments with ratings
-#         rated_assessments = player_data.dropna(subset=["CR"])
-        
-#         if not rated_assessments.empty and latest_entry.get('Position') in POSITION_ATTRIBUTES:
-#             # Create radar chart
-#             position = latest_entry['Position']
-#             attributes = POSITION_ATTRIBUTES[position]
-            
-#             # Get latest assessment with ratings
-#             latest_rated = rated_assessments.iloc[-1]
-            
-#             # Extract ratings
-#             ratings = []
-#             display_attributes = []
-            
-#             for attr in attributes:
-#                 if attr in latest_rated and pd.notna(latest_rated[attr]):
-#                     ratings.append(float(latest_rated[attr]))
-#                     display_attributes.append(attr.replace('_', ' ').title())
-#                 else:
-#                     ratings.append(5.0)  # Default rating
-#                     display_attributes.append(attr.replace('_', ' ').title())
-            
-#             if ratings and len(ratings) > 2:  # Need at least 3 points for radar
-#                 # Create radar chart
-#                 fig = go.Figure()
-                
-#                 fig.add_trace(go.Scatterpolar(
-#                     r=ratings,
-#                     theta=display_attributes,
-#                     fill='toself',
-#                     name=selected_player,
-#                     line_color='rgb(31, 119, 180)'
-#                 ))
-                
-#                 fig.update_layout(
-#                     polar=dict(
-#                         radialaxis=dict(
-#                             visible=True,
-#                             range=[0, 10]
-#                         )),
-#                     showlegend=True,
-#                     title="Player Attributes Radar",
-#                     height=500
-#                 )
-                
-#                 st.plotly_chart(fig, use_container_width=True)
-#             else:
-#                 st.info("Not enough attribute data for radar chart.")
-#         else:
-#             st.info("No assessment data available for radar chart.")
-
-
-# def player_view_tab(scouting_df):
-#     """Individual player view with comments and radar chart"""
-    
-#     if scouting_df.empty:
-#         st.info("No players available. Add some players in the Database tab.")
-#         return
-    
-#     # Create player options with name (club) format
-#     unique_players = scouting_df["Player"].dropna().unique().tolist()
-#     player_options = []
-#     player_mapping = {}
-    
-#     for player in unique_players:
-#         player_data = scouting_df[scouting_df["Player"] == player]
-#         latest_entry = player_data.iloc[-1]
-#         club = latest_entry.get('Club', 'Unknown Club')
-#         display_name = f"{player} ({club})"
-#         player_options.append(display_name)
-#         player_mapping[display_name] = player
-    
-#     # Player selection with name (club) format
-#     selected_display = st.selectbox("Select a player:", player_options)
-    
-#     if not selected_display:
-#         return
-    
-#     selected_player = player_mapping[selected_display]
-    
-#     # Get all data for this player
-#     player_data = scouting_df[scouting_df["Player"] == selected_player]
-    
-#     if player_data.empty:
-#         st.error("No data found for selected player.")
-#         return
-    
-#     # Get basic player info (from first/most recent entry)
-#     latest_entry = player_data.iloc[-1]
-    
-#     col1, col2 = st.columns([0.7, 1])
-    
-#     with col1:
-#         st.subheader(f"{selected_player} Bio")
-        
-#         # Display player details
-#         info_col1, info_col2 = st.columns(2)
-#         with info_col1:
-#             st.write(f"**Club:** {latest_entry.get('Club', 'N/A')}")
-#             st.write(f"**League:** {latest_entry.get('League', 'N/A')}")
-#             st.write(f"**Age:** {latest_entry.get('Age', 'N/A')} ({latest_entry.get('DOB', 'N/A')})")
-#             st.write(f"**Position:** {latest_entry.get('Position', 'N/A')}")
-#             st.write(f"**Height:** {latest_entry.get('Height', 'N/A')} cm")
-#             st.write(f"**Source:** {latest_entry.get('Source', 'N/A')}")
-#             st.write(f"**Scout:** {latest_entry.get('Scout', 'N/A')}")
-#             st.write(f"**Agent:** {latest_entry.get('Agent', 'N/A')}")
-#             st.write(f"**Contract Expires:** {latest_entry.get('Contract Expires', 'N/A')}")
-        
-#         st.subheader("Assessment History")
-        
-#         # Show all assessments for this player - EXPANDED BY DEFAULT
-#         assessed_entries = player_data[
-#             (player_data["Comment"].notna() & (player_data["Comment"] != "")) |
-#             (player_data["Date_Watched"].notna() & (player_data["Date_Watched"] != ""))
-#         ]
-        
-#         if not assessed_entries.empty:
-#             for idx, assessment in assessed_entries.iterrows():
-#                 date_watched = assessment.get('Date_Watched', 'N/A')
-#                 advance_status = assessment.get('Advance', 'N/A')
-#                 scout_name = assessment.get('Scout', 'N/A')
-                
-#                 # Get the actual comment from the Google Sheets note
-#                 comment_col_index = scouting_df.columns.get_loc("Comment") if "Comment" in scouting_df.columns else -1
-#                 if comment_col_index >= 0:
-#                     original_row_index = idx + 1
-#                     actual_comment = get_cell_note(st.session_state["sheet_url"], original_row_index, comment_col_index)
-#                 else:
-#                     actual_comment = "No comment available"
-                
-#                 # Display as expanded content
-#                 st.markdown(f"**{scout_name} - {advance_status} - {date_watched}**")
-#                 st.write(f"**Current Rating:** {assessment.get('CR', 'N/A')}")
-#                 st.write(f"**Potential Rating:** {assessment.get('PR', 'N/A')}")
-#                 st.write(f"**Comment:** {actual_comment if actual_comment else 'No detailed comment'}")
-                
-#                 # Show position-specific attributes if available
-#                 position = assessment.get('Position', '')
-#                 if position in POSITION_ATTRIBUTES:
-#                     attr_values = []
-#                     for attr in POSITION_ATTRIBUTES[position]:
-#                         attr_value = assessment.get(attr, '')
-#                         if pd.notna(attr_value) and attr_value != '':
-#                             attr_display = attr.replace('_', ' ').title()
-#                             attr_values.append(f"{attr_display}: {attr_value}")
-                    
-#                     if attr_values:
-#                         st.write(f"**Attributes:** {', '.join(attr_values)}")
-                
-#                 st.write("---")
-#         else:
-#             st.info("No assessments available for this player.")
-    
-#     with col2:
-#         st.subheader("Performance Radar")
-        
-#         # Get assessments with ratings
-#         rated_assessments = player_data.dropna(subset=["CR"])
-        
-#         if not rated_assessments.empty and latest_entry.get('Position') in POSITION_ATTRIBUTES:
-#             # Assessment selection for radar
-#             assessment_options = []
-#             for idx, assessment in rated_assessments.iterrows():
-#                 scout = assessment.get('Scout', 'Unknown Scout')
-#                 date = assessment.get('Date_Watched', 'Unknown Date')
-#                 option_name = f"{scout} - {date}"
-#                 assessment_options.append((option_name, idx))
-            
-#             selected_assessment_name, selected_idx = st.selectbox(
-#                 "Select assessment for radar:",
-#                 assessment_options,
-#                 format_func=lambda x: x[0]
-#             )
-            
-#             # Get selected assessment
-#             selected_assessment = rated_assessments.loc[selected_idx]
-            
-#             # Create radar chart
-#             position = selected_assessment['Position']
-#             attributes = POSITION_ATTRIBUTES[position]
-            
-#             # Extract ratings
-#             ratings = []
-#             display_attributes = []
-            
-#             for attr in attributes:
-#                 if attr in selected_assessment and pd.notna(selected_assessment[attr]):
-#                     ratings.append(float(selected_assessment[attr]))
-#                     display_attributes.append(attr.replace('_', ' ').title())
-#                 else:
-#                     ratings.append(5.0)  # Default rating
-#                     display_attributes.append(attr.replace('_', ' ').title())
-            
-#             if ratings and len(ratings) > 2:  # Need at least 3 points for radar
-#                 # Create enhanced radar chart
-#                 ratings = ratings + [ratings[0]]
-#                 display_attributes = display_attributes + [display_attributes[0]]
-    
-#                 fig = go.Figure()
-                
-#                 fig.add_trace(go.Scatterpolar(
-#                     r=ratings,
-#                     theta=display_attributes,
-#                     fill='toself',
-#                     name=f'{selected_player}',
-#                     line=dict(color='#00ff00', width=3),
-#                     fillcolor='rgba(0, 255, 0, 0.3)',
-#                     marker=dict(size=8, color='#00ff00')
-#                 ))
-                
-#                 # Update layout with enhanced styling
-#                 fig.update_layout(
-#                     polar=dict(
-#                         bgcolor='rgba(0,0,0,0)',  # Transparent background
-#                         radialaxis=dict(
-#                             visible=True,
-#                             range=[0, 10],  # Fixed 0-10 range
-#                             showticklabels=False,  # Remove numbering
-#                             gridcolor='white',
-#                             gridwidth=1,
-#                             tick0=0,
-#                             dtick=2
-#                         ),
-#                         angularaxis=dict(
-#                             tickfont=dict(size=14, color='white'),
-#                             gridcolor='white',
-#                             gridwidth=1,
-#                             linecolor='white',
-#                             linewidth=2,
-#                             direction='clockwise',  # This helps with edge completion
-#                             rotation=90  # Start from top
-#                         )
-#                     ),
-#                     showlegend=False,
-#                     paper_bgcolor='rgba(0,0,0,0)',  # Transparent paper background
-#                     plot_bgcolor='rgba(0,0,0,0)',   # Transparent plot background
-#                     font=dict(color='white', size=14),
-#                     height=600,
-#                     margin=dict(l=80, r=80, t=80, b=80)
-#                 )
-                
-#                 # Add player annotations
-#                 fig.add_annotation(
-#                     x=0.05, y=1.18,
-#                     text=f"{selected_player}",
-#                     showarrow=False,
-#                     font=dict(size=20, color='#00ff00', family='Arial Black'),
-#                     xref="paper", yref="paper"
-#                 )
-                
-#                 scout_info = selected_assessment.get('Scout', 'Unknown Scout')
-#                 date_info = selected_assessment.get('Date_Watched', 'Unknown Date')
-#                 fig.add_annotation(
-#                     x=0.05, y=1.13,
-#                     text=f"{scout_info} - {date_info}",
-#                     showarrow=False,
-#                     font=dict(size=15, color='#00ff00'),
-#                     xref="paper", yref="paper"
-#                 )
-                
-#                 fig.add_annotation(
-#                     x=0.05, y=1.08,
-#                     text=f"CR: {selected_assessment.get('CR', 'N/A')} | PR: {selected_assessment.get('PR', 'N/A')}",
-#                     showarrow=False,
-#                     font=dict(size=15, color='#00ff00'),
-#                     xref="paper", yref="paper"
-#                 )
-                
-#                 st.plotly_chart(fig, use_container_width=True)
-#             else:
-#                 st.info("Not enough attribute data for radar chart.")
-#         else:
-#             st.info("No assessment data available for radar chart.")
 def player_view_tab(scouting_df):
     """Individual player view with comments and radar chart"""
     
@@ -1259,7 +925,7 @@ def player_view_tab(scouting_df):
                     )
                 
                 #st.plotly_chart(fig, use_container_width=True)
-                st.plotly_chart(fig, width='stretch')
+                st.plotly_chart(fig, use_container_width=True)
             
             # Checkboxes below the radar
             st.write("**Select assessments to display (max 2):**")
