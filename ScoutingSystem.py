@@ -633,7 +633,7 @@ def add_player_tab(sheet_url, scouting_df):
         player_name = st.text_input("Player Name*")
         club = st.text_input("Club*")
         league = st.text_input("League*")
-        age = st.number_input("Age", min_value=16, max_value=40, value=20)
+        age = st.number_input("Age", min_value=0, max_value=40, value=20)
         #dob = st.date_input("Date of Birth", value=date(2004, 1, 1))
         dob = st.text_input("Date of Birth (MM/YY)", placeholder="")
         position = st.selectbox("Position*", list(POSITION_ATTRIBUTES.keys()))
