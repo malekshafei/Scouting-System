@@ -294,6 +294,10 @@ POSITION_ATTRIBUTES = {
             'Passing Vision', '1v1 Dribbling', 'Ball Carrying', 'Run Making', 'Crossing', 'Chance Creation'],
         4: ['1v1 Defending', 'Defensive Awareness', 'Acceleration', 'Speed', 'Strength', 'Aerial Ability', 'Athleticism', 
             'Technical Level', 'Passing Vision', 'Ball Carrying'],
+        '5L': ['1v1 Defending', 'Defensive Awareness', 'Acceleration', 'Speed', 'Strength', 'Aerial Ability', 'Athleticism', 
+            'Technical Level', 'Passing Vision', 'Ball Carrying'],
+        '5R': ['1v1 Defending', 'Defensive Awareness', 'Acceleration', 'Speed', 'Strength', 'Aerial Ability', 'Athleticism', 
+            'Technical Level', 'Passing Vision', 'Ball Carrying'],
         6: ['1v1 Defending', 'Defensive Awareness', 'Acceleration', 'Speed', 'Strength', 'Aerial Ability', 'Athleticism', 'Covering Ground', 'Stamina',
             'Technical Level','Passing Vision', 'Ball Carrying', '1v1 Dribbling', 'Long Range Shooting'],
         8: ['1v1 Defending', 'Defensive Awareness', 'Acceleration', 'Speed', 'Strength', 'Aerial Ability', 'Athleticism', 'Covering Ground', 'Stamina',
@@ -466,7 +470,7 @@ def database_tab(sheet_url, scouting_df):
 
         # Display Positional Stats
         st.subheader("Centre Backs")
-        scouting_df_subsection = scouting_df[scouting_df['Position'] == 4]
+        scouting_df_subsection = scouting_df[scouting_df['Position'].isin(['5L', 4, '5R'])]
         col_a, col_b, col_c, col_d = st.columns(4)
         with col_a: st.metric("Players Added", len(scouting_df_subsection))
         with col_b: st.metric("Watched", len(scouting_df_subsection[scouting_df_subsection['Advance'].isin(['Yes', 'No', 'Maybe'])]))
