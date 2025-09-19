@@ -417,8 +417,8 @@ def database_tab(sheet_url, scouting_df):
             if len(scouting_df) == 1: filtered_age = st.slider("Age", min(scouting_df['Age']-1), max(scouting_df['Age']), (min(scouting_df['Age']), max(scouting_df['Age'])))
             else: filtered_age = st.slider("Age", min(scouting_df['Age']), max(scouting_df['Age']), (min(scouting_df['Age']), max(scouting_df['Age'])))
         with col4: 
-            advance_options = ["Yes", "No"]
-            unique_vals = [x for x in scouting_df["Advance"].dropna().unique() if x not in ["Yes", "No"]]
+            advance_options = ["Yes", "No", "Maybe", "No Video"]
+            unique_vals = [x for x in scouting_df["Advance"].dropna().unique() if x not in ["Yes", "No", "Maybe", "No Video"]]
             advance_options.extend(unique_vals)
             filtered_advance = st.pills("Advanced?", advance_options, selection_mode='multi', default = advance_options)
             #filtered_advance = st.pills("Advanced?", ["Yes", "Maybe", "No", "Not Yet"], selection_mode = 'multi')
@@ -1156,8 +1156,8 @@ def scout_panel_tab(sheet_url, scouting_df):
                     # )
                     advance_decision = st.pills(
                         "Advance?", 
-                        ["Yes", "No", "Maybe"],
-                        default=default_advance if default_advance in ["Yes", "No", "Maybe"] else "Yes",
+                        ["Yes", "No", "Maybe", "No Video"],
+                        default=default_advance if default_advance in ["Yes", "No", "Maybe", "No Video"] else "Yes",
                         key=f"advance_{assessment_key}"
                     )
                     current_rating = st.slider(
