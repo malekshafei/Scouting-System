@@ -648,7 +648,7 @@ def add_player_tab(sheet_url, scouting_df):
         
         submitted = st.form_submit_button("Add Player")
         
-        if submitted and player_name and club and league:
+        if submitted and player_name and club and league and scout:
             for i in range(len(scout)):
                 player_data = {
                     "Player": player_name,
@@ -669,6 +669,8 @@ def add_player_tab(sheet_url, scouting_df):
                 }
                 add_player_to_sheet(sheet_url, player_data)
             st.rerun()
+        elif submitted:
+            st.error("Please fill out all required fields (Player Name, Club, League, and at least one Scout)")
 
 def player_view_tab(scouting_df):
     """Individual player view with comments and radar chart"""
