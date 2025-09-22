@@ -714,7 +714,7 @@ def player_view_tab(scouting_df):
     # Get basic player info (from first/most recent entry)
     latest_entry = player_data.iloc[-1]
     
-    col1, col2 = st.columns([0.7, 1])
+    col1, col2 = st.columns([0.5, 1])
     
     with col1:
         st.subheader(f"{selected_player} Bio")
