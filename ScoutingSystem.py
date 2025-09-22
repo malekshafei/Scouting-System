@@ -1232,8 +1232,8 @@ def scout_panel_tab(sheet_url, scouting_df):
                             "Comment": comment,
                             "Date_Watched": datetime.now().strftime("%Y-%m-%d"),
                             "Position": position_for_attributes, 
-                            "CR": int(current_rating),
-                            "PR": int(potential_rating)
+                            "CR": float(current_rating),
+                            "PR": float(potential_rating)
                         }
                         
                         # Add attribute ratings as integers
