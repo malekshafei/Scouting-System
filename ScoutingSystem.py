@@ -827,7 +827,7 @@ def player_view_tab(scouting_df):
                         if attr in assessment and pd.notna(assessment[attr]):
                             ratings.append(float(assessment[attr]))
                         else:
-                            ratings.append(0.0)  # Default rating
+                            ratings.append(1.0)  # Default rating
                         display_attributes.append(attr.replace('_', ' ').title())
                     
                     if ratings and len(ratings) > 2:
@@ -856,7 +856,7 @@ def player_view_tab(scouting_df):
                         bgcolor='rgba(0,0,0,0)',
                         radialaxis=dict(
                             visible=True,
-                            range=[0, 4.0],
+                            range=[1.0, 4.0],
                             showticklabels=False,
                             gridcolor='white',
                             gridwidth=1,
@@ -1116,8 +1116,8 @@ def scout_panel_tab(sheet_url, scouting_df):
                 if not latest_assessed.empty:
                     existing_data = latest_assessed.iloc[-1]
                     default_advance = existing_data.get("Advance", "")
-                    default_cr = float(existing_data.get("CR", 0.0)) if pd.notna(existing_data.get("CR")) else 0.0
-                    default_pr = float(existing_data.get("PR", 0.0)) if pd.notna(existing_data.get("PR")) else 0.0
+                    default_cr = float(existing_data.get("CR", 1.0)) if pd.notna(existing_data.get("CR")) else 1.0
+                    default_pr = float(existing_data.get("PR", 1.0)) if pd.notna(existing_data.get("PR")) else 1.0
                     
                     # Get the actual comment from the Google Sheets note
                     comment_col_index = scouting_df.columns.get_loc("Comment") if "Comment" in scouting_df.columns else -1
@@ -1130,10 +1130,10 @@ def scout_panel_tab(sheet_url, scouting_df):
                     
                     existing_data = latest_assessed.iloc[-1]  # Keep this for attributes
                 else:
-                    default_advance, default_cr, default_pr, default_comment = "", 0.0, 0.0, ""
+                    default_advance, default_cr, default_pr, default_comment = "", 1.0, 1.0, ""
                     existing_data = None
             else:
-                default_advance, default_cr, default_pr, default_comment = "", 0.0, 0.0, ""
+                default_advance, default_cr, default_pr, default_comment = "", 1.0, 1.0, ""
                 existing_data = None
 
             current_position = latest_entry.get('Position', '')
@@ -1168,12 +1168,12 @@ def scout_panel_tab(sheet_url, scouting_df):
                     )
                     current_rating = st.slider(
                         "Current Rating", 
-                        min_value=0.0, max_value=4.0, value=float(default_cr),step=0.5,
+                        min_value=1.0, max_value=4.0, value=float(default_cr),step=0.5,
                         key=f"cr_{assessment_key}"
                     )
                     potential_rating = st.slider(
                         "Potential Rating", 
-                        min_value=0.0, max_value=4.0, value=float(default_pr), step=0.5,
+                        min_value=1.0, max_value=4.0, value=float(default_pr), step=0.5,
                         key=f"pr_{assessment_key}"
                     )
                     
@@ -1213,7 +1213,7 @@ def scout_panel_tab(sheet_url, scouting_df):
                                 
                                 attribute_ratings[attr] = st.slider(
                                     attr_display,
-                                    0.0, 4.0, default_attr,
+                                    1.0, 4.0, default_attr,
                                     step=0.5,
                                     key=f"{attr}_{assessment_key}_{position_for_attributes}"
                                 )
