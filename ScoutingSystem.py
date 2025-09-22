@@ -418,8 +418,8 @@ def database_tab(sheet_url, scouting_df):
         with col1: search_term = st.text_input("Search players...")
         with col2: filtered_position = st.pills("Positions", list(POSITION_ATTRIBUTES.keys()), selection_mode = 'multi', default = list(POSITION_ATTRIBUTES.keys()))
         with col3: 
-            if len(scouting_df) == 1: filtered_age = st.slider("Age", min(scouting_df['Age']-1), max(scouting_df['Age']), (min(scouting_df['Age']), max(scouting_df['Age'])))
-            else: filtered_age = st.slider("Age", min(scouting_df['Age']), max(scouting_df['Age']), (min(scouting_df['Age']), max(scouting_df['Age'])))
+            if len(scouting_df) == 1: filtered_age = st.slider("Age", int(min(scouting_df['Age']-1)), int(max(scouting_df['Age'])), (int(min(scouting_df['Age'])), int(max(scouting_df['Age']))),step=1)
+            else: filtered_age = st.slider("Age", int(min(scouting_df['Age'])),int(max(scouting_df['Age'])), (int(min(scouting_df['Age'])), int(max(scouting_df['Age']))),step=1)
         with col4: 
             advance_options = ["Yes", "No", "Maybe", "No Video"]
             unique_vals = [x for x in scouting_df["Advance"].dropna().unique() if x not in ["Yes", "No", "Maybe", "No Video"]]
