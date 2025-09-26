@@ -406,6 +406,7 @@ def database_tab(sheet_url, scouting_df):
     if not scouting_df.empty:
         # Add search and filter
         
+        scouting_df = scouting_df.sort_values(by='Date_Sent',ascending=False)
         
         # Show only basic player info columns
         display_cols = ["Player", "Club", "League", "Age", "DOB","Position", "Scout", "Advance", "CR", "PR", "Available?"]
