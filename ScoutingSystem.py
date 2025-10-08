@@ -2554,7 +2554,7 @@ def julian_tab(sheet_url, new_sheet_url, scouting_df, grouped, julian_df):
                             advance_decision = st.pills(
                                 "Advance?", 
                                 ["Tier 1", "Tier 2", "No"],
-                                default=default_advance if default_advance in ["Tier 1", "Tier 2", "No"] else "Yes",
+                                default=default_advance if default_advance in ["Tier 1", "Tier 2", "No", ""] else "",
                                 key=f"advance_{assessment_key}"
                             )
                             current_rating = st.slider(
