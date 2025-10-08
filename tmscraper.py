@@ -46,9 +46,11 @@ class TransfermarktScraper:
         if self.use_scraperapi and self.scraperapi_key:
             # Use ScraperAPI
             api_url = f"https://api.scraperapi.com/?api_key={self.scraperapi_key}&url={url}"
+            print(f"DEBUG: Using ScraperAPI URL: {api_url}")
             response = self.session.get(api_url)
         else:
             # Direct request
+            print(f"DEBUG: Using direct URL: {url}")
             response = self.session.get(url)
         
         response.raise_for_status()
@@ -82,8 +84,16 @@ class TransfermarktScraper:
         if not dob or dob == 'N/A':
             return 'N/A'
         
+
+        #print(dob)
+        #print("")
         # Match DD.MM.YYYY pattern
-        date_match = re.match(r'(\d{1,2})\.(\d{1,2})\.(\d{4})', dob)
+        #date_match = re.match(r'(\d{1,2})\.(\d{1,2})\.(\d{4})', dob)
+        #date_match = re.match(r'(\d{1,2})/(\d{1,2})/(\d{4})', dob)
+        #date_match = re.match(r'(\d{1,2})[./](\d{1,2})[./](\d{4})', dob)
+        date_match = re.match(r'(\d{1,2})[./](\d{1,2})[./](\d{4})', dob)
+
+
         if date_match:
             day, month, year = date_match.groups()
             # Convert to MM/YY format
@@ -301,11 +311,17 @@ class TransfermarktScraper:
                     date_link = next_bold.find('a')
                     if date_link:
                         date_text = date_link.get_text(strip=True)
+                        print(date_text)
                         # Parse "19.10.1996 (28)" format
-                        date_match = re.search(r'([\d.]+)\s*\((\d+)\)', date_text)
+                        #date_match = re.search(r'([\d.]+)\s*\((\d+)\)', date_text)
+                        date_match = re.search(r'([\d./]+)\s*\((\d+)\)', date_text)
                         if date_match:
                             player_data_fields['Date of Birth'] = date_match.group(1)
                             player_data_fields['Age'] = date_match.group(2)
+                            print(f"Full match: {date_match.group(0)}")
+                            print(f"Date: {date_match.group(1)}")
+                            print(f"Age: {date_match.group(2)}")
+
                             dob_found = True
                         else:
                             player_data_fields['Date of Birth'] = date_text
@@ -434,6 +450,7 @@ def main():
     
     # Test URLs
     test_urls = [
+        #"https://www.transfermarkt.com/ramazan-bagdat/profil/spieler/1180296"
         "https://www.transfermarkt.com/jeremiah-st-juste/profil/spieler/288253",
         # Add more URLs here for batch processing
     ]
