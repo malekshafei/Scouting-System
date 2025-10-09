@@ -1682,7 +1682,7 @@ def agent_tab(sheet_url, scouting_df, grouped, julian_df, new_sheet_url):
         agent_df = agent_df[(agent_df['Date_Watched'] != "")]
         
 
-        col1, col2, col3, col4, col5, col6 = st.columns(6)
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 
         with col1: search_term = st.text_input("Search players..")
         with col2: filtered_position = st.pills("Position(s)", list(POSITION_ATTRIBUTES.keys()), selection_mode = 'multi', default = [7], key='Position_agent')
@@ -1691,7 +1691,7 @@ def agent_tab(sheet_url, scouting_df, grouped, julian_df, new_sheet_url):
             else: filtered_age = st.slider("Age Range", int(min(scouting_df['Age'])),int(max(scouting_df['Age'])), (int(min(scouting_df['Age'])), int(max(scouting_df['Age']))),step=1)
         with col4: 
             advance_options = ["Yes", "No", "Maybe", "No Video"]
-            unique_vals = [x for x in scouting_df["Advance"].dropna().unique() if x not in ["Yes", "No", "Maybe", "No Video"]]
+            unique_vals = [x for x in agent_df["Advance"].dropna().unique() if x not in ["Yes", "No", "Maybe", "No Video"]]
             advance_options.extend(unique_vals)
             filtered_advance = st.pills("Advanced? ", advance_options, selection_mode='multi', default = 'Yes', key='Advance_agent')
             #filtered_advance = st.pills("Advanced?", ["Yes", "Maybe", "No", "Not Yet"], selection_mode = 'multi')
@@ -1701,7 +1701,9 @@ def agent_tab(sheet_url, scouting_df, grouped, julian_df, new_sheet_url):
             available_options.extend(unique_vals)
             filtered_available = st.pills("Available? ", available_options, selection_mode='multi', default = available_options, key='available_agent')
             #filtered_available = st.pills("Available?", ['Yes','No']+scouting_df["Available?"].unique(), selection_mode='multi')
-        with col6: 
+        with col6:
+            agent_cp = st.pills('Agent Contact Point', agent_df['Contact Point'].unique(), selection_mode='multi', default = agent_df['Contact Point'].unique(), key = 'cp_agent')
+        with col7: 
             color_options = ['Yellow', 'Grey', 'Blue']
             filtered_color = st.pills("Select Category", color_options, selection_mode='multi', default = color_options, key='color_agent')
 
@@ -1712,7 +1714,7 @@ def agent_tab(sheet_url, scouting_df, grouped, julian_df, new_sheet_url):
             mask = agent_df.astype(str).apply(lambda x: x.str.contains(search_term, case=False, na=False)).any(axis=1)
             agent_df = agent_df[mask]
         
-        else: agent_df = agent_df[(agent_df['Position'].isin(filtered_position)) & (agent_df['Age'] >= filtered_age[0]) &  (agent_df['Age'] <= filtered_age[1]) & (agent_df['Advance'].isin(filtered_advance)) & (agent_df['Available?'].isin(filtered_available)) & (agent_df['Category'].isin(filtered_color))]
+        else: agent_df = agent_df[(agent_df['Position'].isin(filtered_position)) & (agent_df['Age'] >= filtered_age[0]) &  (agent_df['Age'] <= filtered_age[1]) & (agent_df['Advance'].isin(filtered_advance)) & (agent_df['Available?'].isin(filtered_available)) & (agent_df['Contact Point'].isin(agent_cp)) & (agent_df['Category'].isin(filtered_color))]
 
         
         agent_sort = st.selectbox('Sort By', ['Date_Watched', 'CR', 'PR'] )
