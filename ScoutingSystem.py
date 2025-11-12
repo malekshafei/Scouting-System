@@ -1610,7 +1610,7 @@ def power_rankings_tab(grouped):
         selected_position = st.selectbox("Select Position:", positions)
         
         # Profile filter (based on age/category)
-        category_options = ["Yellow", 'Blue', 'Grey']
+        category_options = ["Green", 'Blue', 'Grey']
         selected_profile = st.selectbox("Select Profile:", category_options)
 
 
@@ -1704,7 +1704,7 @@ def agent_tab(sheet_url, scouting_df, grouped, julian_df, new_sheet_url):
         with col6:
             agent_cp = st.pills('Agent Contact Point', agent_df['Contact Point'].unique(), selection_mode='multi', default = agent_df['Contact Point'].unique(), key = 'cp_agent')
         with col7: 
-            color_options = ['Yellow', 'Grey', 'Blue']
+            color_options = ['Green', 'Grey', 'Blue']
             filtered_color = st.pills("Select Category", color_options, selection_mode='multi', default = color_options, key='color_agent')
 
         
@@ -2193,7 +2193,7 @@ def julian_tab(sheet_url, new_sheet_url, scouting_df, grouped, julian_df):
                 #filtered_available = st.pills("Available?", ['Yes','No']+temp_display_df["Available?"].unique(), selection_mode='multi')
             with col6: 
                 #filtered_scout = st.pills("Filter Scout", temp_display_df["Scout"].unique(), selection_mode = 'multi', default = temp_display_df["Scout"].unique())
-                color_options = ['Yellow', 'Grey', 'Blue']
+                color_options = ['Green', 'Grey', 'Blue']
                 filtered_color = st.pills("Select Category", color_options, selection_mode='multi', default = color_options, key='color_julian')
 
             display_df = temp_display_df.copy(deep=True)
@@ -2721,7 +2721,7 @@ def executive_tab(grouped):
         filtered_available = st.pills("Available?", available_options, selection_mode='multi', default = available_options, key='available_exec')
         #filtered_available = st.pills("Available?", ['Yes','No']+scouting_df["Available?"].unique(), selection_mode='multi')
     with col6: 
-        color_options = ['Yellow', 'Grey', 'Blue']
+        color_options = ['Green', 'Grey', 'Blue']
         filtered_color = st.pills("Select Category", color_options, selection_mode='multi', default = color_options, key='color_exec')
 
     
@@ -2733,7 +2733,7 @@ def executive_tab(grouped):
     
     else: filtered_df = filtered_df[(filtered_df['Position'].isin(filtered_position)) & (filtered_df['Age'] >= filtered_age[0]) &  (filtered_df['Age'] <= filtered_age[1]) & (filtered_df['Advance'].isin(filtered_advance)) & (filtered_df['Available?'].isin(filtered_available)) & (filtered_df['Category'].isin(filtered_color))]
 
-    disp_cols = ['Player', 'Club', 'League', 'Age', 'DOB', 'Position', 'Category', 'Scout', 'Advanced','CR', 'PR', 'Strengths', 'Weaknesses', 'Available?']
+    disp_cols = ['Player', 'Club', 'League', 'Age', 'DOB', 'Position', 'Category', 'Scout', 'Advanced','Advance','CR', 'PR', 'Strengths', 'Weaknesses', 'Available?']
     st.dataframe(filtered_df[disp_cols], hide_index=True)
 
 def shadow_teams(scouting_df, julian_df):
@@ -2848,7 +2848,7 @@ def shadow_teams(scouting_df, julian_df):
                 # Draw indicators in yellow to the right
                 if indicators:
                     indicator_text = ' ' + ' '.join(indicators)
-                    draw.text((text_end_x + 10, y), indicator_text, fill='yellow', font=font, ha = 'left')
+                    draw.text((text_end_x + 10, y), indicator_text, fill='green', font=font, ha = 'left')
                 
                 y += 35
                 i += 1
