@@ -797,7 +797,7 @@ def add_player_tab(sheet_url, scouting_df):
         col1, col2, col3,col4= st.columns(4)
         with col1: 
             #scout_assigned = st.text_input("Select Scout*")
-            scout_assigned = st.multiselect("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Julián'])
+            scout_assigned = st.multiselect("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Juan', 'Julián'])
         with col2: 
             priority_assigned = st.selectbox("Priority", ["Clips", "Full Report"])
         with col3: 
@@ -873,7 +873,7 @@ def add_player_tab(sheet_url, scouting_df):
         source = st.selectbox("Source", ["Data", "Agent", "EyeBall", "Scouting"])
         category = st.selectbox("Category", ["Green", "Grey", "Blue"])
         priority = st.selectbox("Priority", ["Clips", "Full Report"])
-        scout = st.multiselect("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Julián'])
+        scout = st.multiselect("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Juan', 'Julián'])
         agent = st.text_input("Agent")
         market_value = st.text_input("Market Value")
         contract_expires = st.text_input("Contract Expires")
@@ -2740,7 +2740,7 @@ def shadow_teams(scouting_df, julian_df):
     from PIL import Image, ImageDraw, ImageFont
     import io
     
-    shadow_team_scout = st.selectbox("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Julián'])
+    shadow_team_scout = st.selectbox("Select Scout", ['Maxi', 'Adam', 'Pablo', 'Nithin', 'Enzo', 'Vasileios', 'Juan', 'Julián'])
 
     if shadow_team_scout == 'Julián':
         shadow_team_df = julian_df[julian_df['Shadow Team?'] == 'Yes']
